@@ -3,3 +3,4 @@ uvicorn
 httpx
 playwright>=1.48
 mitmproxy
+websockets>=14

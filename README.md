@@ -5,7 +5,14 @@ browser `CONNECT` proxy. Playwright intercepts each page request and sends it
 to the gateway; the gateway fetches the target URL server-side and returns the
 response. The browser retains the original page URL, so normal relative links,
 JavaScript `fetch`/XHR requests, redirects, and page-origin storage continue to
-work without rewriting HTML.
+work without rewriting HTML. Downloads returned by HTTP(S) requests are
+accepted by the browser context.
+
+WebSocket requests are rewritten to the gateway and relayed to the target
+server. The gateway forwards the selected subprotocol, page origin, and cookies
+from the browser's recent HTTP requests for that target. Cookie state for
+WebSockets is held in gateway process memory for up to one hour; a gateway
+restart or multi-instance deployment may interrupt authenticated WebSockets.
 
 ## Configure
 
@@ -47,8 +54,11 @@ restricting outbound network access at the hosting provider as an additional
 SSRF safeguard. The gateway must be reachable by the Playwright client.
 
 Browser HTTP and HTTPS requests, including page subresources and API calls,
-are routed through the gateway. WebSocket connections are blocked so they do
-not bypass it; WebRTC and other browser features that bypass normal page
-requests are not transparently proxied. Websites may also reject server-side
-traffic or depend on browser TLS/network characteristics the gateway cannot
-reproduce.
+and WebSocket connections are routed through the gateway. Service workers
+remain blocked because their network requests can bypass Playwright routing.
+WebRTC, WebTransport, and other browser features that do not use ordinary
+HTTP(S) or WebSocket requests are not proxied. The client currently ignores
+TLS errors so it can connect to gateways with untrusted certificates; this
+weakens TLS protection and should be replaced with a trusted certificate/CA
+where possible. Websites may also reject server-side traffic or depend on
+browser TLS/network characteristics the gateway cannot reproduce.
