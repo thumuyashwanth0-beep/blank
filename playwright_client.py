@@ -126,7 +126,7 @@ def run_playwright() -> None:
 
     gateway = PROXY_DOMAIN.rstrip("/")
     print(f"Launching Playwright through the HTTPS-fetch gateway at {gateway}...")
-    with httpx.Client(timeout=60.0) as client, sync_playwright() as p:
+    with httpx.Client(verify=False, timeout=60.0) as client, sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         context = browser.new_context(service_workers="block")
         context.route_web_socket(
