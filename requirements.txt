@@ -1,6 +1,5 @@
 fastapi
 uvicorn
 httpx
-beautifulsoup4
-playwright
+playwright>=1.48
 mitmproxy
