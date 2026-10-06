@@ -7,7 +7,7 @@ app = FastAPI(title="Python Proxy Gateway")
 client = httpx.AsyncClient(follow_redirects=True)
 
 # Replace with your actual deployed domain
-CUSTOM_DOMAIN = "https://proxy.yourdomain.com"
+CUSTOM_DOMAIN = "https://blank-bob9.onrender.com"
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"])
 async def proxy_gateway(request: Request, path: str, url: str = None):
